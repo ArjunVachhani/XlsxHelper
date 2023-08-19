@@ -3,7 +3,7 @@ using System.Xml;
 
 namespace XlsxHelper;
 
-public sealed class WorksheetReader : IAsyncEnumerable<Row?>, IDisposable
+public sealed class WorksheetReader : IAsyncEnumerable<Row>, IDisposable
 {
     private readonly XmlReader _reader;
     private readonly ISharedStringLookup _sharedStringLookup;
@@ -27,7 +27,7 @@ public sealed class WorksheetReader : IAsyncEnumerable<Row?>, IDisposable
         //dont dispose _sharedStringLookup. it might be used by other WorksheetReader
     }
 
-    public IAsyncEnumerator<Row?> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+    public IAsyncEnumerator<Row> GetAsyncEnumerator(CancellationToken cancellationToken = default)
     {
         return new WorksheetRowAsyncEnumerator(this);
     }
@@ -131,7 +131,7 @@ public sealed class WorksheetReader : IAsyncEnumerable<Row?>, IDisposable
         };
     }
 
-    private struct WorksheetRowAsyncEnumerator : IAsyncEnumerator<Row?>
+    private struct WorksheetRowAsyncEnumerator : IAsyncEnumerator<Row>
     {
         private readonly WorksheetReader _worksheetReader;
         public WorksheetRowAsyncEnumerator(WorksheetReader worksheetReader)
@@ -139,7 +139,7 @@ public sealed class WorksheetReader : IAsyncEnumerable<Row?>, IDisposable
             _worksheetReader = worksheetReader;
         }
 
-        public Row? Current => _worksheetReader._currentRow;
+        public Row Current => _worksheetReader._currentRow!.Value;
 
         public ValueTask DisposeAsync()
         {
