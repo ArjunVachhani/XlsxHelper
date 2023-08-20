@@ -11,9 +11,8 @@ XlsxHelper has been crafted with the primary intention of efficiently parsing ex
 
 ### When to not use XlsxHelper
 - You want to read rows in random manner.
-- You want to read thing like.
-- You want to read xls.
-- Width of row/column.
+- You want to read thing like width of row/column, font size / color etc 
+- You want to read xls file format.
 
 
 ### Example 1
@@ -48,12 +47,12 @@ using (var workbook = XlsxReader.OpenWorkbook(filePath))
     {
         if (headerRow)
         {
-            headerLooklup = ReadHeader(row);
+            headerLooklup = ReadHeader(row); //Read all header names from first row
             headerRow = false;
             continue;
         }
         var student = new Student();
-        student.FirstName = row[headerLooklup[nameof(Student.FirstName)]].CellValue;
+        student.FirstName = row[headerLooklup[nameof(Student.FirstName)]].CellValue; //get cell value 
         student.LastName = row[headerLooklup[nameof(Student.LastName)]].CellValue;
         student.Grade = row[headerLooklup[nameof(student.Grade)]].CellValue;
         student.Marks = new Marks
@@ -68,7 +67,7 @@ using (var workbook = XlsxReader.OpenWorkbook(filePath))
         //yield return student;
     }
 
-    static Dictionary<string, ColumnName> ReadHeader(Row row)
+    static Dictionary<string, ColumnName> ReadHeader(Row row) //read header
     {
         Dictionary<string, ColumnName> headerLooklup = new Dictionary<string, ColumnName>();
         foreach (var cell in row.Cells)
