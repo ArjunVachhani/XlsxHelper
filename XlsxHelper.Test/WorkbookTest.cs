@@ -57,7 +57,7 @@ public class WorkbookTest
     }
 
     [Theory]
-    [InlineData("delete1.xlsx")]
+    [InlineData("verysimple.xlsx")]
     public async Task DisposeRelasesFile(string fileName)
     {
         var path = Utility.GetXlsxSampleFilePath(fileName);
@@ -69,25 +69,25 @@ public class WorkbookTest
                 await foreach (var row in worksheetReader)
                 {
                     //read lock is held
-                    Assert.Throws<IOException>(() => File.Delete(path));
+                    Assert.Throws<IOException>(() => File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read));
                 }
             }
         }
-        //no lock, delete should work
-        File.Delete(path);
+        //no lock, open read/write should work
+        using var stream = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
     }
 
     [Theory]
-    [InlineData("delete2.xlsx")]
+    [InlineData("verysimple.xlsx")]
     public void DisposeRelasesFile2(string fileName)
     {
         var path = Utility.GetXlsxSampleFilePath(fileName);
         using (var workbook = XlsxReader.OpenWorkbook(path))
         {
             //read lock is held
-            Assert.Throws<IOException>(() => File.Delete(path));
+            Assert.Throws<IOException>(() => File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read));
         }
-        //no lock, delete should work
-        File.Delete(path);
+        //no lock, open read/write should work
+        using var stream = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
     }
 }
