@@ -40,7 +40,7 @@ public class WorksheetReaderTest
         {
             for (int i = 0; i < row.Cells.Length; i++)
             {
-                Assert.Equal(workSheet1Content[row.RowNumber - 1][i], row.Cells[i].Value);
+                Assert.Equal(workSheet1Content[row.RowNumber - 1][i], row.Cells[i].CellValue);
             }
         }
 
@@ -70,7 +70,7 @@ public class WorksheetReaderTest
         {
             for (int i = 0; i < row.Cells.Length; i++)
             {
-                Assert.Equal(workSheet2Content[row.RowNumber - 1][i], row.Cells[i].Value);
+                Assert.Equal(workSheet2Content[row.RowNumber - 1][i], row.Cells[i].CellValue);
             }
         }
     }
