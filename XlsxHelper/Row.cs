@@ -19,4 +19,12 @@ public readonly struct Row
 
     public int RowNumber => _rowNumber;
     public Cell[] Cells => _cells;
+    public Cell? this[string columnName]
+    {
+        get
+        {
+            var cell = _cells.FirstOrDefault(x => x.ColumnName == columnName);
+            return cell.ColumnName == columnName ? cell : null;
+        }
+    }
 }

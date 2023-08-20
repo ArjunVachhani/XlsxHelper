@@ -92,12 +92,6 @@ public struct ColumnName
         return x._char1 == char1 && x._char2 == char2 && x._char3 == char3;
     }
 
-    private static bool IntEquals(ColumnName x, int y)
-    {
-        //TODO comparision
-        return true;
-    }
-
     private static bool ColumnEquals(ColumnName x, ColumnName y)
     {
         return x._char1 == y._char1 && x._char2 == y._char2 && x._char3 == y._char3;
@@ -111,8 +105,6 @@ public struct ColumnName
             return this == column;
         if (obj is string str)
             return StringEquals(this, str);
-        if (obj is int i)
-            return IntEquals(this, i);
         return false;
     }
 

@@ -17,7 +17,7 @@ public sealed class WorksheetReader : IAsyncEnumerable<Row>, IDisposable
 
     internal WorksheetReader(Stream stream, ISharedStringLookup sharedStringLookup)
     {
-        _reader = XmlReader.Create(stream, new XmlReaderSettings { IgnoreComments = true, IgnoreWhitespace = true, Async = true });
+        _reader = XmlReader.Create(stream, new XmlReaderSettings { IgnoreComments = true, Async = true });
         _sharedStringLookup = sharedStringLookup;
     }
 
@@ -113,8 +113,8 @@ public sealed class WorksheetReader : IAsyncEnumerable<Row>, IDisposable
     private bool IsRowElementNode() => _reader.Name == "row" && _nodeHierarchy.Count == 2 && _nodeHierarchy.Peek() == "sheetData";
     private bool IsCellElementNode() => _reader.Name == "c" && _nodeHierarchy.Count == 3 && _nodeHierarchy.Peek() == "row";
     private bool IsCellValueTextNode() => _reader.NodeType == XmlNodeType.Text && _nodeHierarchy.Count == 5 && _nodeHierarchy.Peek() == "v";
-    private bool IsInternalStringTextNode() => _reader.NodeType == XmlNodeType.Text && _nodeHierarchy.Count == 6 && _nodeHierarchy.Peek() == "t";
-    private bool IsInternalRichTextStringTextNode() => _reader.NodeType == XmlNodeType.Text && _nodeHierarchy.Count == 7 && _nodeHierarchy.Peek() == "t";
+    private bool IsInternalStringTextNode() => (_reader.NodeType == XmlNodeType.Text || _reader.NodeType == XmlNodeType.Whitespace || _reader.NodeType == XmlNodeType.SignificantWhitespace) && _nodeHierarchy.Count == 6 && _nodeHierarchy.Peek() == "t";
+    private bool IsInternalRichTextStringTextNode() => (_reader.NodeType == XmlNodeType.Text || _reader.NodeType == XmlNodeType.Whitespace || _reader.NodeType == XmlNodeType.SignificantWhitespace) && _nodeHierarchy.Count == 7 && _nodeHierarchy.Peek() == "t";
 
     private CellValueType GetCellValueType(string cellValueType)
     {

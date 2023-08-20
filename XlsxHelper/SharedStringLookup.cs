@@ -13,7 +13,7 @@ internal class SharedStringLookup : ISharedStringLookup
     private readonly StringBuilder _tempCellTextStringBuilder = new StringBuilder();
     public SharedStringLookup(Stream xmlStream, bool useFilebackedList)
     {
-        _reader = XmlReader.Create(xmlStream, new XmlReaderSettings() { IgnoreComments = true, IgnoreWhitespace = true, Async = true });
+        _reader = XmlReader.Create(xmlStream, new XmlReaderSettings() { IgnoreComments = true, Async = true });
         _values = useFilebackedList ? new FileBackedList() : new RamBackedList();
     }
 
@@ -74,7 +74,7 @@ internal class SharedStringLookup : ISharedStringLookup
     }
 
     private bool IsSiElementNode() => _reader.Name == "si" && _nodeHierarchy.Count == 1 && _nodeHierarchy.Peek() == "sst";
-    private bool IsSiTextNode() => _reader.NodeType == XmlNodeType.Text && _nodeHierarchy.Count == 3 && _nodeHierarchy.Peek() == "t";
-    private bool IsSiRichTextNode() => _reader.NodeType == XmlNodeType.Text && _nodeHierarchy.Count == 4 && _nodeHierarchy.Peek() == "t";
+    private bool IsSiTextNode() => (_reader.NodeType == XmlNodeType.Text || _reader.NodeType == XmlNodeType.Whitespace || _reader.NodeType == XmlNodeType.SignificantWhitespace) && _nodeHierarchy.Count == 3 && _nodeHierarchy.Peek() == "t";
+    private bool IsSiRichTextNode() => (_reader.NodeType == XmlNodeType.Text || _reader.NodeType == XmlNodeType.Whitespace || _reader.NodeType == XmlNodeType.SignificantWhitespace) && _nodeHierarchy.Count == 4 && _nodeHierarchy.Peek() == "t";
 
 }
