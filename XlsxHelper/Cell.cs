@@ -18,36 +18,36 @@ public readonly struct Cell
     }
 
     public ColumnName ColumnName => _columnName;
-    public string? Value => _value;
+    public string? CellValue => _value;
 
     public bool TryGetInt32(out int i)
     {
-        return int.TryParse(Value, out i);
+        return int.TryParse(CellValue, out i);
     }
 
     public bool TryGetInt64(out long l)
     {
-        return long.TryParse(Value, out l);
+        return long.TryParse(CellValue, out l);
     }
 
     public bool TryGetFloat(out float f)
     {
-        return float.TryParse(Value, out f);
+        return float.TryParse(CellValue, out f);
     }
 
     public bool TryGetDouble(out double d)
     {
-        return double.TryParse(Value, out d);
+        return double.TryParse(CellValue, out d);
     }
 
     public bool TryGetDecimal(out decimal d)
     {
-        return decimal.TryParse(Value, out d);
+        return decimal.TryParse(CellValue, out d);
     }
 
     public bool TryGetDateTime(out DateTime dt)
     {
-        if (double.TryParse(Value, out var d))
+        if (double.TryParse(CellValue, out var d))
         {
             try
             {
@@ -62,32 +62,32 @@ public readonly struct Cell
 
     public int GetInt32()
     {
-        return int.Parse(Value!);
+        return int.Parse(CellValue!);
     }
 
     public long GetInt64()
     {
-        return long.Parse(Value!);
+        return long.Parse(CellValue!);
     }
 
     public float GetFloat()
     {
-        return float.Parse(Value!);
+        return float.Parse(CellValue!);
     }
 
     public double GetDouble()
     {
-        return double.Parse(Value!);
+        return double.Parse(CellValue!);
     }
 
     public decimal GetDecimal()
     {
-        return decimal.Parse(Value!);
+        return decimal.Parse(CellValue!);
     }
 
     public DateTime GetDateTime()
     {
-        var d = double.Parse(Value!);
+        var d = double.Parse(CellValue!);
         return DateTime.FromOADate(d);
     }
 }
