@@ -29,3 +29,12 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+      
+  merge:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create NuGet package
+      run: dotnet pack --configuration Release
+    - name: Publish to nuget.org
+      run: dotnet nuget push "bin/Release/XlsxHelper.1.0.0.nupkg"  --api-key ${{ secrets.NUGET_API_KEY }}
