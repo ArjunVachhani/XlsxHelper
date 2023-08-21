@@ -36,7 +36,7 @@ internal class Program
         {
             var worksheet = workbook.Worksheets.First();
             bool headerRow = true;
-            Dictionary<string, ColumnName> headerLooklup = null;
+            Dictionary<string, ColumnName> headerLooklup = new();
             await foreach (var row in worksheet.WorksheetReader)
             {
                 if (headerRow)
@@ -66,7 +66,7 @@ internal class Program
                 Dictionary<string, ColumnName> headerLooklup = new Dictionary<string, ColumnName>();
                 foreach (var cell in row.Cells)
                 {
-                    headerLooklup.Add(cell.CellValue, cell.ColumnName);
+                    headerLooklup.Add(cell.CellValue!, cell.ColumnName);
                 }
                 return headerLooklup;
             }

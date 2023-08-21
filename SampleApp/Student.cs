@@ -2,10 +2,10 @@
 
 public class Student
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Grade { get; set; }
-    public Marks Marks { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public string? Grade { get; set; }
+    public Marks? Marks { get; set; }
 }
 
 public class Marks

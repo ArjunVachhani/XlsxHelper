@@ -4,6 +4,14 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageProjectUrl>https://github.com/ArjunVachhani/XlsxHelper</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ArjunVachhani/XlsxHelper</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>xlsx; excel; xlsx reader; large files</PackageTags>
+    <Description>XlsxHelper is designed to be  lightweight library to read large xlsx files with minimal memory overhead.</Description>
+    <RepositoryType>git</RepositoryType>
+    <Title>An efficient Xlsx file reader designed for processing large Xlsx files</Title>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -16,4 +24,10 @@
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 </Project>
