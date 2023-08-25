@@ -14,6 +14,11 @@ XlsxHelper has been crafted with the primary intention of efficiently parsing ex
 - You want to read thing like width of row/column, font size / color etc 
 - You want to read xls file format.
 
+### Project Status
+XlsxHelper is actively maintained. Please feel free to ask question and raise issues.
+
+### How to get started
+Install NuGet package https://www.nuget.org/packages/XlsxHelper/
 
 ### Example 1
 ```csharp
