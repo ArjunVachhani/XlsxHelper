@@ -31,12 +31,16 @@ public sealed class Workbook : IDisposable
     {
         using (stream)
         {
-            var relationshipNamespace = XmlNamespaces.Relationships;
+            var relationshipNamespace = XmlNamespaces.RelationshipsOpenXmlFormat;
             using var reader = XmlReader.Create(stream, new XmlReaderSettings() { IgnoreWhitespace = true, IgnoreComments = true });
             var sheetNamesWithrId = new List<(string sheetName, string rId)>();
             var stack = new Stack<string>();
             while (reader.Read() && !reader.EOF)
             {
+                if (reader.NodeType == XmlNodeType.Element && reader.Name == "workbook" && stack.Count == 0)
+                {
+                    relationshipNamespace = reader.GetAttribute("xmlns:r") == XmlNamespaces.RelationshipsOclc ? XmlNamespaces.RelationshipsOclc : XmlNamespaces.RelationshipsOpenXmlFormat;
+                }
                 if (reader.NodeType == XmlNodeType.Element && reader.Name == "sheet" && stack.Count == 2 && stack.Peek() == "sheets")
                 {
                     var sheetname = reader.GetAttribute("name");
