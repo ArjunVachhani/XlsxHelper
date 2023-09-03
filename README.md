@@ -3,7 +3,6 @@
 
 XlsxHelper has been crafted with the primary intention of efficiently parsing extensive Excel files. This library is designed to be lightweight, ensuring that it doesn't load the entire dataset into memory all at once. Instead, it adopts a sequential approach, fetching and returning one row per iteration. As a result of this methodology, the memory overhead is minimized.
 
-
 ### When to use XlsxHelper
 - You need to process large xlsx file.
 - You want to read content with very little RAM usage.
@@ -28,7 +27,7 @@ using (var workbook = XlsxReader.OpenWorkbook(filePath))
     {
         Console.WriteLine($"Worksheet {worksheet.Name}"); //get name of worksheet
         using var worksheetReader = worksheet.WorksheetReader; //get WorksheetReader from worksheet
-        await foreach (var row in worksheetReader) //read row from worksheetreader
+        foreach (var row in worksheetReader) //read row from worksheetreader
         {
             Console.WriteLine($"Content of row {row.RowNumber}"); //display current row number
             foreach (var cell in row.Cells) // Display all cell content
@@ -48,7 +47,7 @@ using (var workbook = XlsxReader.OpenWorkbook(filePath))
     var worksheet = workbook.Worksheets.First();
     bool headerRow = true;
     Dictionary<string, ColumnName> headerLooklup = null;
-    await foreach (var row in worksheet.WorksheetReader)
+    foreach (var row in worksheet.WorksheetReader)
     {
         if (headerRow)
         {
@@ -83,3 +82,12 @@ using (var workbook = XlsxReader.OpenWorkbook(filePath))
     }
 }
 ```
+
+### How fast and lightweight is it?
+
+|                                               | XlsxHelper | LightweightExcelReader | ExcelDataReader AsDataset | ExcelDataReader |
+|-----------------------------------------------|------------|------------------------|---------------------------|-----------------|
+| Time to read first row                        | 5ms        | 14ms                   | -                         | -               |
+| Time to read all rows(50,000)                 | 3.90 sec   | 7.60 sec               | 13.50 sec                 | 10.10 sec       |
+| Memory usage at the time of reading first row | 31.412 MB  | 32.649 MB              | -                         | 42.057 MB       |
+| Memory usage at the time of reading last row  | 38.891 MB  | 901.976 MB             | 471.662 MB                | 42.414 MB       |

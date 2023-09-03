@@ -3,7 +3,7 @@
 public class WorksheetReaderTest
 {
     [Fact]
-    public async Task SampleFile()
+    public void SampleFile()
     {
         var path = Utility.GetXlsxSampleFilePath("verysimple.xlsx");
         using var workbook = XlsxReader.OpenWorkbook(path);
@@ -11,14 +11,14 @@ public class WorksheetReaderTest
         foreach (var worksheet in workbook.Worksheets)
         {
             using var worksheetReader = worksheet.WorksheetReader;
-            await foreach (var row in worksheetReader)
+            foreach (var row in worksheetReader)
             {
             }
         }
     }
 
     [Fact]
-    public async Task StyleAndFormattedFile()
+    public void StyleAndFormattedFile()
     {
         var path = Utility.GetXlsxSampleFilePath("styledworkbook.xlsx");
         var workSheet1Content = new string[][]
@@ -36,7 +36,7 @@ public class WorksheetReaderTest
         var worksheet1 = workbook.Worksheets.First();
         Assert.Equal("text styling", worksheet1.Name);
         using var worksheet1Reader = worksheet1.WorksheetReader;
-        await foreach (var row in worksheet1Reader)
+        foreach (var row in worksheet1Reader)
         {
             for (int i = 0; i < row.Cells.Length; i++)
             {
@@ -66,7 +66,7 @@ public class WorksheetReaderTest
         var worksheet2 = workbook.Worksheets.ElementAt(1);
         Assert.Equal("number & date formatting", worksheet2.Name);
         using var worksheet2Reader = worksheet2.WorksheetReader;
-        await foreach (var row in worksheet2Reader)
+        foreach (var row in worksheet2Reader)
         {
             for (int i = 0; i < row.Cells.Length; i++)
             {

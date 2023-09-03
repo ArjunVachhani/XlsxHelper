@@ -1,9 +1,10 @@
-﻿using System.Text;
+﻿using System.Collections;
+using System.Text;
 using System.Xml;
 
 namespace XlsxHelper;
 
-public sealed class WorksheetReader : IAsyncEnumerable<Row>, IDisposable
+public sealed class WorksheetReader : IEnumerable<Row>, IDisposable
 {
     private readonly XmlReader _reader;
     private readonly ISharedStringLookup _sharedStringLookup;
@@ -17,7 +18,7 @@ public sealed class WorksheetReader : IAsyncEnumerable<Row>, IDisposable
 
     internal WorksheetReader(Stream stream, ISharedStringLookup sharedStringLookup)
     {
-        _reader = XmlReader.Create(stream, new XmlReaderSettings { IgnoreComments = true, Async = true });
+        _reader = XmlReader.Create(stream, new XmlReaderSettings { IgnoreComments = true });
         _sharedStringLookup = sharedStringLookup;
     }
 
@@ -27,19 +28,24 @@ public sealed class WorksheetReader : IAsyncEnumerable<Row>, IDisposable
         //dont dispose _sharedStringLookup. it might be used by other WorksheetReader
     }
 
-    public IAsyncEnumerator<Row> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+    public IEnumerator<Row> GetEnumerator()
     {
-        return new WorksheetRowAsyncEnumerator(this);
+        return new WorksheetRowEnumerator(this);
     }
 
-    private async ValueTask<bool> MoveNextAsync()
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return new WorksheetRowEnumerator(this);
+    }
+
+    private bool MoveNext()
     {
         var rowNumber = 0;
         ColumnName? columnName = null;
         CellValueType? cellValueType = null;
         string? cellValueText = null;
         bool hasMultipleTextForCell = false;
-        while (await _reader.ReadAsync() && !_reader.EOF)
+        while (_reader.Read() && !_reader.EOF)
         {
             if (_reader.NodeType == XmlNodeType.Element && IsRowElementNode())
             {
@@ -131,25 +137,31 @@ public sealed class WorksheetReader : IAsyncEnumerable<Row>, IDisposable
         };
     }
 
-    private struct WorksheetRowAsyncEnumerator : IAsyncEnumerator<Row>
+    private struct WorksheetRowEnumerator : IEnumerator<Row>
     {
         private readonly WorksheetReader _worksheetReader;
-        public WorksheetRowAsyncEnumerator(WorksheetReader worksheetReader)
+        public WorksheetRowEnumerator(WorksheetReader worksheetReader)
         {
             _worksheetReader = worksheetReader;
         }
 
         public Row Current => _worksheetReader._currentRow!.Value;
 
-        public ValueTask DisposeAsync()
+        object IEnumerator.Current => Current;
+
+        public void Dispose()
         {
             _worksheetReader.Dispose();
-            return ValueTask.CompletedTask;
         }
 
-        public ValueTask<bool> MoveNextAsync()
+        public bool MoveNext()
         {
-            return _worksheetReader.MoveNextAsync();
+            return _worksheetReader.MoveNext();
+        }
+
+        public void Reset()
+        {
+            throw new InvalidOperationException();
         }
     }
 }
