@@ -8,7 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="LightweightExcelReader" Version="0.1.12" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\XlsxHelper\XlsxHelper.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="sampledocs-50mb-xlsx-file-sst.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="sampledocs-50mb-xlsx-file.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

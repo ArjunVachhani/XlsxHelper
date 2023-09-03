@@ -5,7 +5,7 @@ public class WorkbookTest
     [Theory]
     [InlineData("empty.xlsx")]
     [InlineData("multipleemptysheets.xlsx")]
-    public async Task EmptyXlsx(string fileName)
+    public void EmptyXlsx(string fileName)
     {
         var path = Utility.GetXlsxSampleFilePath(fileName);
         using var workbook = XlsxReader.OpenWorkbook(path);
@@ -13,7 +13,7 @@ public class WorkbookTest
         foreach (var worksheet in workbook.Worksheets)
         {
             using var worksheetReader = worksheet.WorksheetReader;
-            await foreach (var row in worksheetReader)
+            foreach (var row in worksheetReader)
             {
             }
         }
@@ -39,7 +39,7 @@ public class WorkbookTest
     [Theory]
     [InlineData("multisheet1.xlsx", new[] { "one", "two", "three", "b", "a" })]
     [InlineData("singlesheet.xlsx", new[] { "one" })]
-    public async Task IdentifiesWorksheets(string fileName, string[] worksheetNames)
+    public void IdentifiesWorksheets(string fileName, string[] worksheetNames)
     {
         var path = Utility.GetXlsxSampleFilePath(fileName);
         using var workbook = XlsxReader.OpenWorkbook(path);
@@ -49,7 +49,7 @@ public class WorkbookTest
         {
             Assert.Equal(worksheetNames[i], worksheet.Name);
             using var worksheetReader = worksheet.WorksheetReader;
-            await foreach (var row in worksheetReader)
+            foreach (var row in worksheetReader)
             {
             }
             i++;
@@ -58,7 +58,7 @@ public class WorkbookTest
 
     [Theory(Skip = "Fails on GitHub Action")]
     [InlineData("verysimple.xlsx")]
-    public async Task DisposeRelasesFile(string fileName)
+    public void DisposeRelasesFile(string fileName)
     {
         var path = Utility.GetXlsxSampleFilePath(fileName);
         using (var workbook = XlsxReader.OpenWorkbook(path))
@@ -66,7 +66,7 @@ public class WorkbookTest
             foreach (var worksheet in workbook.Worksheets)
             {
                 using var worksheetReader = worksheet.WorksheetReader;
-                await foreach (var row in worksheetReader)
+                foreach (var row in worksheetReader)
                 {
                     //read lock is held
                     Assert.Throws<IOException>(() => File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.Read));

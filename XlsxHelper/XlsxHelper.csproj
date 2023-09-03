@@ -7,10 +7,10 @@
     <PackageProjectUrl>https://github.com/ArjunVachhani/XlsxHelper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ArjunVachhani/XlsxHelper</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>xlsx; excel; xlsx reader; large files</PackageTags>
-    <Description>XlsxHelper is designed to be  lightweight library to read large xlsx files with minimal memory overhead.</Description>
+    <PackageTags>lightweight; excel; xlsx; data; reader; helper; xlsxhelper; xlsx-reader; large-files; spreadsheet;</PackageTags>
+    <Description>An memory efficient Excel Xlsx file reader designed for processing large Xlsx files.</Description>
     <RepositoryType>git</RepositoryType>
-    <Title>An efficient Xlsx file reader designed for processing large Xlsx files</Title>
+    <Title>XlsxHelper is designed to be  lightweight library to read large xlsx files with minimal memory overhead.</Title>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
