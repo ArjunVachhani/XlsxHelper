@@ -1,6 +1,6 @@
 ﻿namespace XlsxHelper;
 
-public struct ColumnName
+public readonly struct ColumnName
 {
     private const char zeroChar = (char)0;
 

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace XlsxHelper;
+﻿namespace XlsxHelper;
 
 public readonly struct Row : IEnumerable<Cell>
 {
@@ -21,12 +19,18 @@ public readonly struct Row : IEnumerable<Cell>
 
     public int RowNumber => _rowNumber;
     public Cell[] Cells => _cells;
+    
     public Cell this[string columnName]
     {
         get
         {
-            var cell = _cells.FirstOrDefault(x => x.ColumnName == columnName);
-            return cell.ColumnName == columnName ? cell : throw new XlsxHelperException("Cell value does not exist");
+            for (int i = 0; i < _cells.Length; i++)
+            {
+                if (_cells[i].ColumnName == columnName)
+                    return _cells[i];
+            }
+
+            throw new XlsxHelperException("Cell value does not exist");
         }
     }
 
@@ -34,8 +38,13 @@ public readonly struct Row : IEnumerable<Cell>
     {
         get
         {
-            var cell = _cells.FirstOrDefault(x => x.ColumnName == columnName);
-            return cell.ColumnName == columnName ? cell : throw new XlsxHelperException("Cell value does not exist");
+            for (int i = 0; i < _cells.Length; i++)
+            {
+                if (_cells[i].ColumnName == columnName)
+                    return _cells[i];
+            }
+
+            throw new XlsxHelperException("Cell value does not exist");
         }
     }
 

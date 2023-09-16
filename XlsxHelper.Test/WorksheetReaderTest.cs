@@ -35,14 +35,18 @@ public class WorksheetReaderTest
         Assert.NotEmpty(workbook.Worksheets);
         var worksheet1 = workbook.Worksheets.First();
         Assert.Equal("text styling", worksheet1.Name);
-        using var worksheet1Reader = worksheet1.WorksheetReader;
-        foreach (var row in worksheet1Reader)
+        var r = 0;
+        foreach (var row in worksheet1.WorksheetReader)
         {
-            for (int i = 0; i < row.Cells.Length; i++)
+            int c = 0;
+            for (; c < row.Cells.Length; c++)
             {
-                Assert.Equal(workSheet1Content[row.RowNumber - 1][i], row.Cells[i].CellValue);
+                Assert.Equal(workSheet1Content[r][c], row.Cells[c].CellValue);
             }
+            Assert.Equal(workSheet1Content[r].Length, c);
+            r++;
         }
+        Assert.Equal(workSheet1Content.Length, r);
 
         var workSheet2Content = new string[][]
         {
@@ -65,13 +69,17 @@ public class WorksheetReaderTest
         };
         var worksheet2 = workbook.Worksheets.ElementAt(1);
         Assert.Equal("number & date formatting", worksheet2.Name);
-        using var worksheet2Reader = worksheet2.WorksheetReader;
-        foreach (var row in worksheet2Reader)
+        r = 0;
+        foreach (var row in worksheet2.WorksheetReader)
         {
-            for (int i = 0; i < row.Cells.Length; i++)
+            int c = 0;
+            for (; c < row.Cells.Length; c++)
             {
-                Assert.Equal(workSheet2Content[row.RowNumber - 1][i], row.Cells[i].CellValue);
+                Assert.Equal(workSheet2Content[r][c], row.Cells[c].CellValue);
             }
+            Assert.Equal(workSheet2Content[r].Length, c);
+            r++;
         }
+        Assert.Equal(workSheet2Content.Length, r);
     }
 }

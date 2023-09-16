@@ -3,7 +3,7 @@ using System.Xml;
 
 namespace XlsxHelper;
 
-internal class SharedStringLookup : ISharedStringLookup
+internal class SharedStringLookup
 {
     private readonly XmlReader _reader;
     private readonly ISharedStringList _values;
@@ -25,16 +25,21 @@ internal class SharedStringLookup : ISharedStringLookup
     public string GetValue(int index)
     {
         if (index > _values.Count - 1)
-            ReadTill(index);
+        {
+           var cellText = ReadTill(index);
 
-        if (index > _values.Count - 1)
-            throw new XlsxHelperException("Invalid shared string lookup position.");
+            if (index > _values.Count - 1)
+                throw new XlsxHelperException("Invalid shared string lookup position.");
+
+            return cellText!;
+        }
 
         return _values[index];
     }
 
-    private void ReadTill(int index)
+    private string? ReadTill(int index)
     {
+        string? lastCellText = null;
         bool hasMultipleTextForCell = false;
         string? cellValueText = null;
         while (index >= _values.Count && _reader.Read() && !_reader.EOF)
@@ -65,12 +70,14 @@ internal class SharedStringLookup : ISharedStringLookup
                 {
                     var cellText = hasMultipleTextForCell ? _tempCellTextStringBuilder.ToString() : cellValueText;
                     _values.Add(cellText!);
+                    lastCellText = cellText;
                     hasMultipleTextForCell = false;
                     cellValueText = null;
                     _tempCellTextStringBuilder.Clear();
                 }
             }
         }
+        return lastCellText;
     }
 
     private bool IsSiElementNode() => _reader.Name == "si" && _nodeHierarchy.Count == 1 && _nodeHierarchy.Peek() == "sst";

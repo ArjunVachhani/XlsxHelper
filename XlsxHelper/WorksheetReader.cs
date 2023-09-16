@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Text;
+﻿using System.Text;
 using System.Xml;
 
 namespace XlsxHelper;
@@ -7,16 +6,16 @@ namespace XlsxHelper;
 public sealed class WorksheetReader : IEnumerable<Row>, IDisposable
 {
     private readonly XmlReader _reader;
-    private readonly ISharedStringLookup _sharedStringLookup;
+    private readonly SharedStringLookup _sharedStringLookup;
     private readonly Stack<string> _nodeHierarchy = new Stack<string>();
 
-    private Row? _currentRow;
+    private int _rowNumber = 0;
+    private readonly List<Cell> _cells = new List<Cell>();
 
-    //cleared after every cell processing is completed;
-    private readonly List<Cell> _tempCells = new List<Cell>();
+    //cleared after every cell processing is completed.
     private readonly StringBuilder _tempCellTextStringBuilder = new StringBuilder();
 
-    internal WorksheetReader(Stream stream, ISharedStringLookup sharedStringLookup)
+    internal WorksheetReader(Stream stream, SharedStringLookup sharedStringLookup)
     {
         _reader = XmlReader.Create(stream, new XmlReaderSettings { IgnoreComments = true });
         _sharedStringLookup = sharedStringLookup;
@@ -38,9 +37,49 @@ public sealed class WorksheetReader : IEnumerable<Row>, IDisposable
         return new WorksheetRowEnumerator(this);
     }
 
+    public bool ReadRow()
+    {
+        return MoveNext();
+    }
+
+    public Cell this[int index]
+    {
+        get
+        {
+            return index < _cells.Count ? _cells[index] : throw new XlsxHelperException("Cell value does not exist");
+        }
+    }
+
+    public Cell this[string columnName]
+    {
+        get
+        {
+            for (int i = 0; i < _cells.Count; i++)
+            {
+                if (_cells[i].ColumnName == columnName)
+                    return _cells[i];
+            }
+
+            throw new XlsxHelperException("Cell value does not exist");
+        }
+    }
+
+    public Cell this[ColumnName columnName]
+    {
+        get
+        {
+            for (int i = 0; i < _cells.Count; i++)
+            {
+                if (_cells[i].ColumnName == columnName)
+                    return _cells[i];
+            }
+
+            throw new XlsxHelperException("Cell value does not exist");
+        }
+    }
+
     private bool MoveNext()
     {
-        var rowNumber = 0;
         ColumnName? columnName = null;
         CellValueType? cellValueType = null;
         string? cellValueText = null;
@@ -49,8 +88,8 @@ public sealed class WorksheetReader : IEnumerable<Row>, IDisposable
         {
             if (_reader.NodeType == XmlNodeType.Element && IsRowElementNode())
             {
-                _currentRow = null;
-                rowNumber = int.Parse(_reader.GetAttribute("r")!);
+                _cells.Clear();
+                _rowNumber = int.Parse(_reader.GetAttribute("r")!);
             }
 
             if (_reader.NodeType == XmlNodeType.Element && IsCellElementNode())
@@ -91,8 +130,6 @@ public sealed class WorksheetReader : IEnumerable<Row>, IDisposable
 
                 if (IsRowElementNode())
                 {
-                    _currentRow = new Row(rowNumber, _tempCells.ToArray());
-                    _tempCells.Clear();
                     return true;
                 }
 
@@ -102,7 +139,7 @@ public sealed class WorksheetReader : IEnumerable<Row>, IDisposable
                     {
                         var cellText = hasMultipleTextForCell ? _tempCellTextStringBuilder.ToString() : cellValueText;
                         var cell = new Cell(columnName.Value, cellText);
-                        _tempCells.Add(cell);
+                        _cells.Add(cell);
                     }
 
                     hasMultipleTextForCell = false;
@@ -137,15 +174,16 @@ public sealed class WorksheetReader : IEnumerable<Row>, IDisposable
         };
     }
 
-    private struct WorksheetRowEnumerator : IEnumerator<Row>
+    private class WorksheetRowEnumerator : IEnumerator<Row>
     {
         private readonly WorksheetReader _worksheetReader;
         public WorksheetRowEnumerator(WorksheetReader worksheetReader)
         {
             _worksheetReader = worksheetReader;
+            Current = new Row(-1, new Cell[0]);
         }
 
-        public Row Current => _worksheetReader._currentRow!.Value;
+        public Row Current { get; private set; }
 
         object IEnumerator.Current => Current;
 
@@ -156,7 +194,9 @@ public sealed class WorksheetReader : IEnumerable<Row>, IDisposable
 
         public bool MoveNext()
         {
-            return _worksheetReader.MoveNext();
+            var result = _worksheetReader.MoveNext();
+            Current = new Row(_worksheetReader._rowNumber, _worksheetReader._cells.ToArray());
+            return result;
         }
 
         public void Reset()
