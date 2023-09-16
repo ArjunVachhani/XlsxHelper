@@ -1,4 +1,5 @@
 ﻿using System.IO.Compression;
+using System.Linq;
 using System.Xml;
 
 namespace XlsxHelper;
@@ -6,7 +7,7 @@ namespace XlsxHelper;
 public sealed class Workbook : IDisposable
 {
     private readonly ZipArchive _archive;
-    private readonly ISharedStringLookup _sharedStringLookup;
+    private readonly SharedStringLookup _sharedStringLookup;
     private Worksheet[] _workSheets;
 
     public IEnumerable<Worksheet> Worksheets => _workSheets;

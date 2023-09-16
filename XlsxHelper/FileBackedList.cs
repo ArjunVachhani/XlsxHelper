@@ -8,6 +8,7 @@ public class FileBackedList : ISharedStringList
     private readonly FileStream fileStream;
     private readonly SortedSet<RowPointer> pageIndex;
     private readonly byte[] buffer = new byte[128];
+    private readonly Cache<int, string> cache;
     private long appendPosition;
     private int lastIndexedPage = -1;
     private RowPointer? lastRowPointer;
@@ -17,6 +18,7 @@ public class FileBackedList : ISharedStringList
         fileStream = File.Open(Path.GetTempFileName(), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None | FileShare.Delete);
         appendPosition = fileStream.Position;
         pageIndex = new SortedSet<RowPointer>(RowPointerComparer.Comparer);
+        cache = new Cache<int, string>(GetInternal, 500);
     }
 
     public int Count { get; private set; }
@@ -67,6 +69,11 @@ public class FileBackedList : ISharedStringList
     }
 
     public string Get(int index)
+    {
+        return cache.GetOrAddValue(index);
+    }
+
+    private string GetInternal(int index)
     {
         if (index < 0 || index >= Count)
             throw new XlsxHelperException("Index out of range.");

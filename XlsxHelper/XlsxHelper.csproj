@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageProjectUrl>https://github.com/ArjunVachhani/XlsxHelper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ArjunVachhani/XlsxHelper</RepositoryUrl>

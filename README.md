@@ -83,7 +83,7 @@ using (var workbook = XlsxReader.OpenWorkbook(filePath))
 }
 ```
 
-### How fast and lightweight is it?
+### XlsxHelper is fast and lightweight for normal files. Below results shows time and memory used to read 50MB/50,000 Records
 
 |                                               | XlsxHelper | LightweightExcelReader | ExcelDataReader AsDataset | ExcelDataReader |
 |-----------------------------------------------|------------|------------------------|---------------------------|-----------------|
@@ -91,3 +91,12 @@ using (var workbook = XlsxReader.OpenWorkbook(filePath))
 | Time to read all rows(50,000)                 | 3.90 sec   | 7.60 sec               | 13.50 sec                 | 10.10 sec       |
 | Memory usage at the time of reading first row | 31.412 MB  | 32.649 MB              | -                         | 42.057 MB       |
 | Memory usage at the time of reading last row  | 38.891 MB  | 901.976 MB             | 471.662 MB                | 42.414 MB       |
+
+### XlsxHelper is memory optimized for reading huge xlsx files. see below results for reading [1 Million Employee records](https://excelbianalytics.com/wp/downloads-16-sample-csv-files-data-sets-for-testing/)
+
+|                                               | XlsxHelper | ExcelDataReader |
+|-----------------------------------------------|------------|-----------------|
+| Time to read first row                        | 5ms        | -               |
+| Time to read all rows(1,000,000)              | 102.50 sec | 61.10 sec       |
+| Memory usage at the time of reading first row | 31.920 MB  | 668.381 MB      |
+| Memory usage at the time of reading last row  | 41.103 MB  | 667.934 MB      |

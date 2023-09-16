@@ -10,6 +10,9 @@ internal class Program
         //Samples.Sample1(filePath);
         //Samples.Sample2(filePath);
 
+        //validate read results
+        //Comparison.ValidateReadOperation(filePath);
+
         //To check comparison uncomment below line 1 by 1 
         Comparison.XlsxHelper(filePath);
         //Comparison.ExcelDataReader(filePath);
