@@ -19,18 +19,14 @@ public readonly struct Row : IEnumerable<Cell>
 
     public int RowNumber => _rowNumber;
     public Cell[] Cells => _cells;
-    
+
     public Cell this[string columnName]
     {
         get
         {
-            for (int i = 0; i < _cells.Length; i++)
-            {
-                if (_cells[i].ColumnName == columnName)
-                    return _cells[i];
-            }
-
-            throw new XlsxHelperException("Cell value does not exist");
+            if (!TryGetCellValue(columnName, out Cell cell))
+                throw new XlsxHelperException("Cell value does not exist");
+            return cell;
         }
     }
 
@@ -38,14 +34,40 @@ public readonly struct Row : IEnumerable<Cell>
     {
         get
         {
-            for (int i = 0; i < _cells.Length; i++)
-            {
-                if (_cells[i].ColumnName == columnName)
-                    return _cells[i];
-            }
-
-            throw new XlsxHelperException("Cell value does not exist");
+            if (!TryGetCellValue(columnName, out var cell))
+                throw new XlsxHelperException("Cell value does not exist");
+            return cell;
         }
+    }
+
+    public bool TryGetCellValue(string columnName, out Cell value)
+    {
+        for (int i = 0; i < _cells.Length; i++)
+        {
+            if (_cells[i].ColumnName == columnName)
+            {
+                value = _cells[i];
+                return true;
+            }
+        }
+
+        value = default;
+        return false;
+    }
+
+    public bool TryGetCellValue(ColumnName columnName, out Cell value)
+    {
+        for (int i = 0; i < _cells.Length; i++)
+        {
+            if (_cells[i].ColumnName == columnName)
+            {
+                value = _cells[i];
+                return true;
+            }
+        }
+
+        value = default;
+        return false;
     }
 
     public IEnumerator<Cell> GetEnumerator()

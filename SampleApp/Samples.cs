@@ -38,8 +38,27 @@ internal class Samples
                 {
                     headerLooklup = ReadHeader(row);
                     headerRow = false;
-                    continue;
                 }
+                else
+                {
+                    var student = ReadDataRow(headerLooklup, row);
+                    //Process model. 
+                    //yield return student;
+                }
+            }
+
+            static Dictionary<string, ColumnName> ReadHeader(Row row)
+            {
+                Dictionary<string, ColumnName> headerLooklup = new Dictionary<string, ColumnName>();
+                foreach (var cell in row.Cells)
+                {
+                    headerLooklup.Add(cell.CellValue!, cell.ColumnName);
+                }
+                return headerLooklup;
+            }
+
+            static Student ReadDataRow(Dictionary<string, ColumnName> headerLooklup, Row row)
+            {
                 var student = new Student();
                 student.FirstName = row[headerLooklup[nameof(Student.FirstName)]].CellValue;
                 student.LastName = row[headerLooklup[nameof(Student.LastName)]].CellValue;
@@ -51,19 +70,7 @@ internal class Samples
                     Mathematics = row[headerLooklup[nameof(Marks.Mathematics)]].GetInt32(),
                     Physics = row[headerLooklup[nameof(Marks.Physics)]].GetInt32()
                 };
-
-                //Process model. 
-                //yield return student;
-            }
-
-            static Dictionary<string, ColumnName> ReadHeader(Row row)
-            {
-                Dictionary<string, ColumnName> headerLooklup = new Dictionary<string, ColumnName>();
-                foreach (var cell in row.Cells)
-                {
-                    headerLooklup.Add(cell.CellValue!, cell.ColumnName);
-                }
-                return headerLooklup;
+                return student;
             }
         }
     }
